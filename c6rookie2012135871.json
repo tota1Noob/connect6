@@ -1,0 +1,73 @@
+{
+    "gameID": "c6rookie2012135871",
+    "gameTimeStamp": "20220625102557",
+    "blackID": "a12345",
+    "whiteID": "a54321",
+    "winner":"white",
+    "steps": [
+        {
+            "round": 1,
+            "player": "black",
+            "cost": 100,
+            "positions": {
+                "x1": 2,
+                "y1": 3
+            }
+        },
+        {
+            "round": 2,
+            "player": "white",
+            "cost": 150,
+            "positions": {
+                "x1": 7,
+                "y1": 5,
+                "x2": 9,
+                "y2": 5
+            }
+        },
+        {
+            "round": 3,
+            "player": "black",
+            "cost": 200,
+            "positions": {
+                "x1": 3,
+                "y1": 4,
+                "x2": 2,
+                "y2": 5
+            }
+        },
+        {
+            "round": 4,
+            "player": "white",
+            "cost": 100,
+            "positions": {
+                "x1": 6,
+                "y1": 5,
+                "x2": 10,
+                "y2": 5
+            }
+        },
+        {
+            "round": 5,
+            "player": "black",
+            "cost": 300,
+            "positions": {
+                "x1": 7,
+                "y1": 10,
+                "x2": 5,
+                "y2": 5
+            }
+        },
+        {
+            "round": 4,
+            "player": "white",
+            "cost": 100,
+            "positions": {
+                "x1": 8,
+                "y1": 5,
+                "x2": 11,
+                "y2": 5
+            }
+        }
+    ]
+}

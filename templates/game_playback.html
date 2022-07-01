@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>棋局重放</title>
+    <style>
+        body{
+            margin: 0;
+        }
+        #banner{
+            margin: 0 auto;
+            width: 100%;
+            height: 60px;
+            line-height: 60px;
+            text-align: center;
+            font-size: 24pt;
+            font-family: "Microsoft YaHei";
+            border-bottom: 1px solid rgb(185, 185, 185);
+            background-color: rgb(240, 240, 240);
+        }
+        #content{
+            margin: 0 auto;
+            margin-top: 30px;
+            width: 850px;
+            height: 600px;
+            padding-left: 30px;
+            border: 1px solid rgb(185, 185, 185);
+            box-shadow: 0px 0px 3px 3PX rgb(240, 240, 240);
+        }
+        #gameInfo{
+            float: left;
+            width: 250px;
+            padding-top: 30px;
+            padding-bottom: 30px;
+        }
+        #playerInfo{
+            width: 99%;
+            height: 200px;
+            margin-bottom: 30px;
+            border: 1px solid rgb(200, 200, 200);
+            box-shadow: 0px 0px 3px 3PX rgb(240, 240, 240);
+        }
+        #profilePic{
+            float: left;
+            height: 100%;
+            margin: 0;
+        }
+        #board{
+            float: left;
+            position: relative;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+            background-color: rgb(255, 255, 255);
+            width: 600px;
+            height: 600px;
+        }
+        button{
+            width: 110px;
+            height: 77px;
+            font-size: 18pt;
+            font-family: "Microsoft YaHei";
+        }
+    </style>
+</head>
+<body>
+    <div id="banner">
+        <span id="gameId"><b>棋局回放</b> - </span>
+    </div>
+    
+    <div id="content">
+        <div id="gameInfo">
+            <div id="playerInfo">
+                <div style="height: 110px; width: 100%;">
+                    <div id="profilePic">
+                        <img src="{{black_player_pic}}" width="110px" height="110px">
+                    </div>
+                    <div id="blackPlayerID" style="float: left; padding-left: 15px;">
+                    </div>
+                </div>
+                <div id="blackPlayerInfo" style="padding-top: 10px; padding-left: 10px;">
+                </div>
+            </div>
+            <div id="playerInfo">
+                <div style="height: 110px; width: 100%;">
+                    <div id="profilePic">
+                        <img src="{{white_player_pic}}" width="110px" height="110px">
+                    </div>
+                    <div id="whitePlayerID" style="float: left; padding-left: 15px;">
+                    </div>
+                </div>
+                <div id="whitePlayerInfo" style="padding-top: 10px; padding-left: 10px;">
+                </div>
+            </div>
+            <button id="startPlayback" onclick="startPlayback()">回 放</button>
+            <button id="reset" onclick="drawEmptyBoard()" style="margin-left: 25px;">重 置</button>
+        </div>
+        <div>
+            <canvas id="board" width="600" height="600"></canvas>
+        </div>    
+    </div>    
+</body>
+<script>
+    var gameRecord = JSON.parse('{{game_record | tojson | safe}}');
+    var board = document.getElementById("board");
+    var context = board.getContext("2d");
+    //var scale = window.devicePixelRatio;
+    //context.scale(scale, scale);
+
+    function displayInfo(){
+        document.getElementById("gameId").innerHTML += gameRecord.gameID
+        document.getElementById("blackPlayerID").innerHTML = 
+            "<span style='font-size: 22pt; font-family: Microsoft YaHei; line-height: 2em;'>" + "<b>欧拉</b>" + "</span><br>" +
+            "<span style='font-size: 12pt; font-family: Microsoft YaHei;'><b>ID：</b>" + gameRecord.blackID + "<br><b>执黑</b></span>";
+        document.getElementById("whitePlayerID").innerHTML = 
+            "<span style='font-size: 22pt; font-family: Microsoft YaHei; line-height: 2em;'>" + "<b>高斯</b>" + "</span><br>" +
+            "<span style='font-size: 12pt; font-family: Microsoft YaHei;'><b>ID</b>：" + gameRecord.whiteID + "<br><b>执白</b></span>";
+
+        document.getElementById("blackPlayerInfo").innerHTML = 
+            "<span style='font-size: 12pt; font-family: Microsoft YaHei; line-height: 18pt;'>" + 
+            "<b>天梯积分</b>：2400<br>" +
+            "<b>段位</b>：黄金<br>" +
+            "<b>战绩</b>：44胜23负" +
+            "</span>";
+        document.getElementById("whitePlayerInfo").innerHTML = 
+            "<span style='font-size: 12pt; font-family: Microsoft YaHei; line-height: 18pt;'>" + 
+            "<b>天梯积分</b>：2200<br>" +
+            "<b>段位</b>：白银<br>" +
+            "<b>战绩</b>：32胜18负" +
+            "</span>";
+    }
+
+    function drawEmptyBoard(){
+        context.shadowBlur = 0;
+        context.fillStyle = "white";
+        context.beginPath();
+        context.fillRect(0, 0, 600, 600);
+        context.closePath();
+
+        context.beginPath();
+        for(var i = 1; i < 20; ++i){
+            context.moveTo(i * 30, 30);
+            context.lineTo(i * 30, 570);
+            context.moveTo(30, i * 30);
+            context.lineTo(570, i * 30);
+        }
+        context.stroke();
+        document.getElementById("reset").disabled = true;
+        document.getElementById("startPlayback").disabled = false;
+    }
+
+    function drawDot(x, y, r, color){
+        context.fillStyle = color;
+        context.shadowColor = "#BBBBBB";
+        context.shadowOffsetX = 0;
+        context.shadowOffsetY = 0;
+        context.shadowBlur = 10;
+        context.beginPath();
+        context.arc((x + 1) * 30, (y + 1) * 30, r, 0, Math.PI * 2);
+        context.closePath();
+        context.fill();
+        context.stroke();  
+    }
+
+    function sleep(time){
+        return new Promise(resolve => setTimeout(resolve, time));
+    }
+
+    async function startPlayback(){
+        document.getElementById("startPlayback").disabled = true;
+        var steps = gameRecord.steps;
+        for (step of steps){
+            if(step.round != 1){
+                await sleep(step.cost / 2);
+            }
+            else{
+                await sleep(step.cost);
+            }
+            drawDot(step.positions.x1, step.positions.y1, 14, step.player);
+            if(step.round != 1){
+                await sleep(step.cost / 2);
+                drawDot(step.positions.x2, step.positions.y2, 14, step.player);
+            } 
+        }
+        
+        await sleep(1000);
+
+        context.fillStyle = "rgba(255, 255, 255, 0.7)";
+        context.beginPath();
+        context.fillRect(0 + 15, 0 + 15, 570, 570);
+        context.closePath();
+
+        context.font="50px bold Microsoft YaHei";
+        context.fillStyle = "black";
+        if(gameRecord.winner == "black"){
+            context.fillText("黑方获胜", 200, 300);
+        }
+        else{
+            context.fillText("白方获胜", 200, 300);
+        }
+
+        document.getElementById("reset").disabled = false;
+    }
+
+    displayInfo();
+    drawEmptyBoard();
+</script>
+</html>
